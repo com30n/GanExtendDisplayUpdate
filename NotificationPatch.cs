@@ -42,6 +42,7 @@ namespace GanExtendDisplay
 
             __instance.text = __instance.condition.GetText() + " " + __instance.condition.value;
             __instance.item.textDuration.SetText(__instance.condition.TextDuration);
+            __instance.item.textDuration.SetActive(__instance.condition.HasDuration);
             return false;
         }
     }

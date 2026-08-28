@@ -106,7 +106,7 @@ namespace GanExtendDisplay
 						bool flag3 = (__instance.source.tag.Contains("neg") ? (__instance.Value > 0) : (__instance.Value < 0));
 						int num = Mathf.Abs(__instance.Value);
 						bool flag4 = Card?.ShowFoodEnc ?? false;
-						bool flag5 = Card != null && Card.IsWeapon && __instance is Ability;
+						bool flag5 = Card != null && __instance is Ability && (Card.IsWeapon || Card.IsThrownWeapon || Card.IsAmmo || Card.category.slot == 35);
 						if (__instance.IsTrait || (flag4 && __instance.IsFoodTrait)) {
 							string[] textArray = __instance.source.GetTextArray("textAlt");
 							int num2 = Mathf.Clamp(__instance.Value / 10 + 1, (__instance.Value < 0 || textArray.Length <= 2) ? 1 : 2, textArray.Length - 1);
@@ -116,7 +116,7 @@ namespace GanExtendDisplay
 						} else if (flag5) {
 							text = "isProc".lang(__instance.Name);
 							flag3 = false;
-						} else if (categorySub == "resist") {
+						} else if (categorySub == "resist" || __instance is Feat) {
 							text = ("isResist" + (flag3 ? "Neg" : "")).lang(__instance.Name);
 						} else if (categorySub == "eleAttack") {
 							text = "isEleAttack".lang(__instance.Name);
@@ -168,6 +168,10 @@ namespace GanExtendDisplay
 							color = FontColor.FoodQuality;
 						}
 
+						if (__instance.id == 484 && __instance.owner?.Card != null && __instance.owner.Card.CountRune(countFree: false) >= __instance.owner.Card.MaxRune()) {
+							color = FontColor.Gray;
+						}
+
 						if (funcText != null) {
 							text = funcText(__instance, text);
 						}
@@ -186,7 +190,7 @@ namespace GanExtendDisplay
 								}
 							}
 
-							if (thing.IsFood && __instance.IsFoodTrait) {
+							if (thing.ShowFoodEnc && __instance.IsFoodTrait) {
 								sprite = EClass.core.refs.icons.enc.traitFood;
 							}
 
@@ -204,7 +208,8 @@ namespace GanExtendDisplay
 							uIItem.image1.sprite = sprite;
 						}
 
-						uIItem.image2.SetActive(__instance.source.IsWeaponEnc);
+						uIItem.image2.SetActive(__instance.source.IsWeaponEnc || __instance.source.IsShieldEnc);
+						uIItem.image2.sprite = (__instance.source.IsWeaponEnc ? EClass.core.refs.icons.enc.weaponEnc : EClass.core.refs.icons.enc.shieldEnc);
 						onAddNote?.Invoke(n, __instance);
 						return;
 					}

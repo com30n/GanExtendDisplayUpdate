@@ -551,6 +551,9 @@ namespace GanExtendDisplay
 
             foreach (BaseStats stat in stats)
             {
+                if (stat is ConBaseTransmuteMimic)
+                    continue;
+
                 string phase = stat.GetPhaseStr();
                 if (phase.IsEmpty() || phase == "#")
                     continue;
@@ -586,7 +589,7 @@ namespace GanExtendDisplay
                 string parentName = null;
                 if (!string.IsNullOrWhiteSpace(item.act.source.aliasParent))
                 {
-                    string aliasParentElement = Element.GetName(item.act.source.aliasParent);
+                    string aliasParentElement = EClass.sources.elements.alias.TryGetValue(item.act.source.aliasParent)?.GetName();
                     if (aliasParentElement != null)
                         parentName = "(" + aliasParentElement + ")";
                 }
